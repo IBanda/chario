@@ -1,10 +1,12 @@
 import CryptoJS from 'crypto-js';
 
 export default function getSignature(urlPath, httpMethod = 'get', body = '') {
-  const salt = CryptoJS.lib.WordArray.random(12);
+  const salt = CryptoJS.lib.WordArray.random(12).toString();
   const timestamp = (Math.floor(new Date().getTime() / 1000) - 1).toString();
   let stringifiedBody = '';
-  if (body) stringifiedBody = JSON.stringify(body);
+  if (JSON.stringify(body) !== '{}' && body !== '') {
+    stringifiedBody = JSON.stringify(body);
+  }
 
   const toSign =
     httpMethod +
