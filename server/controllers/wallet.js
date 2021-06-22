@@ -7,9 +7,8 @@ const baseURL = 'https://sandboxapi.rapyd.net/v1';
 
 export async function createCompanyWallet(req, res, next) {
   const { body } = req;
-
   try {
-    const wallet = createWallet(body);
+    const wallet = await createWallet(body);
     res.status(201);
     res.json(wallet);
   } catch (error) {
@@ -40,10 +39,11 @@ export async function addWalletFunds(req, res, next) {
     const response = await fetch(baseURL + '/account/deposit', {
       method: 'POST',
       headers: getHeaders(signature, salt, timestamp),
+      body: JSON.stringify(body),
     });
-
+    const data = await response.json();
     res.status(200);
-    res.json(response);
+    res.json(data);
   } catch (error) {
     next(error);
   }
@@ -60,9 +60,34 @@ export async function transferwalletFunds(req, res, next) {
     const response = await fetch(baseURL + '/account/transfer', {
       method: 'POST',
       headers: getHeaders(signature, salt, timestamp),
+      body: JSON.stringify(body),
     });
+
+    const data = await response.json();
     res.status(200);
-    res.json(response);
+    res.json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function setTransferResponse(req, res, next) {
+  const { body } = req;
+  try {
+    const { signature, salt, timestamp } = getSignature(
+      '/v1/account/transfer/response',
+      'post',
+      body
+    );
+    const response = await fetch(baseURL + '/account/transfer/response', {
+      method: 'POST',
+      headers: getHeaders(signature, salt, timestamp),
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+    res.status(200);
+    res.json(data);
   } catch (error) {
     next(error);
   }
@@ -70,10 +95,11 @@ export async function transferwalletFunds(req, res, next) {
 
 async function createWallet(body) {
   const { signature, salt, timestamp } = getSignature('/v1/user', 'post', body);
-  const wallet = await fetch(baseURL + '/user', {
+  const response = await fetch(baseURL + '/user', {
     method: 'POST',
     headers: getHeaders(signature, salt, timestamp),
+    body: JSON.stringify(body),
   });
-
+  const wallet = await response.json();
   return wallet;
 }
