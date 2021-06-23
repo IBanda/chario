@@ -5,7 +5,7 @@ import {
   addWalletFunds,
   transferwalletFunds,
   setTransferResponse,
-} from '../controllers/wallet.js';
+} from '../controllers/hub.js';
 
 const router = express.Router();
 
