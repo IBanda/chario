@@ -2,6 +2,7 @@
 import fetch from 'node-fetch';
 import getHeaders from '../utils/getHeaders.js';
 import getSignature from '../utils/getSignature.js';
+import Hub from '../models/hub.js';
 
 const baseURL = 'https://sandboxapi.rapyd.net/v1';
 
@@ -9,6 +10,8 @@ export async function createCompanyWallet(req, res, next) {
   const { body } = req;
   try {
     const wallet = await createWallet(body);
+    await Hub.create({ wallet: wallet.data.id });
+
     res.status(201);
     res.json(wallet);
   } catch (error) {
