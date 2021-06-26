@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 try {
-  mongoose.connect('mongodb://localhost:27017/charioDB', {
+  mongoose.connect(process.env.MONGODB_URI, {
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
