@@ -4,5 +4,8 @@
     "sourceType": "module",
     "ecmaVersion": 2021
   },
-  "ignorePatterns": ["node_modules", "bin"]
+  "ignorePatterns": ["node_modules", "bin"],
+  "rules": {
+    "consistent-return": "off"
+  }
 }
