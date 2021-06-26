@@ -16,6 +16,8 @@ export async function signUp(req, res, next) {
     await user.hashFn(password);
     const newUser = await user.save();
 
+    req.session.user = newUser.id;
+
     res.status(200);
     res.json(newUser);
   } catch (error) {
@@ -42,6 +44,7 @@ export async function signIn(req, res, next) {
       return res.json({ message: 'Invalid password provided' });
     }
 
+    req.session.user = user.id;
     res.status(200);
     res.json(user);
   } catch (error) {
