@@ -1,11 +1,11 @@
 /* eslint-disable consistent-return */
+import Hub from '../models/hub.js';
 import Loan from '../models/loan.js';
-import User from '../models/user.js';
 import transporter from '../utils/transporter.js';
 
 export async function requestLoan(req, res, next) {
-  const { body } = req;
-  const { loaner, loanee } = body;
+  let i = 0;
+  const { loaner, ...body } = req.body;
   try {
     const hasPending = await Loan.exists({ status: 'pending' });
     if (hasPending) {
@@ -16,18 +16,17 @@ export async function requestLoan(req, res, next) {
       });
     }
 
-    const request = await Loan.create(body);
+    const user = req.session.user;
+    const request = await Loan.create({ ...body, loaner, loanee: user });
+    const { members } = await Hub.findById(loaner, 'members').populate({
+      path: 'members',
+    });
 
-    const users = await User.find(
-      { hub: loaner },
-      { wallet: { $ne: loanee } }
-    ).populate('hub');
-    let i = 0;
-    while (i < users.length) {
+    while (i < members.length) {
       // eslint-disable-next-line no-await-in-loop
       await transporter.sendMail({
         from: `Chario <chario@ianbanda.com>`,
-        to: users[i].email,
+        to: members[i].email,
         subject: 'Loan Request',
         text: 'Hello',
         html: '<h1>Hello</h1>',
@@ -44,14 +43,15 @@ export async function requestLoan(req, res, next) {
 }
 
 export async function loanAction(req, res, next) {
-  const {
-    body: { status, loanId, hubId, userId, reason },
-  } = req;
+  const { status, loanId, hubId, userId, reason } = req.body;
   try {
+    if (status !== 'decline' && status !== 'approve') {
+      throw new Error('Status must either be decline or approve');
+    }
+
     const request = await Loan.findById({ _id: loanId });
 
     if (request.approvals.includes(userId) || request.status === 'declined') {
-      res.status(403);
       return res.end();
     }
 
@@ -67,17 +67,19 @@ export async function loanAction(req, res, next) {
       });
     }
 
-    const hubUsersCount = await User.countDocuments({ hub: hubId });
-    if (request.approvals.length + 1 === hubUsersCount) {
-      await Loan.findByIdAndUpdate(loanId, {
-        status: 'approved',
-      });
-    }
+    const { members } = await Hub.findById(hubId, 'members');
 
     await Loan.findByIdAndUpdate(loanId, {
       $push: { approvals: userId },
     });
 
+    if (request.approvals.length + 1 === members.length - 1) {
+      await Loan.findByIdAndUpdate(loanId, {
+        status: 'approved',
+        active: true,
+      });
+      // DISBURSE
+    }
     res.status(200);
     return res.json({
       status: 'SUCCESS',
