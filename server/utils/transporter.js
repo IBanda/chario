@@ -9,4 +9,9 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export default transporter;
+export default async function sendMail(details) {
+  await transporter.sendMail({
+    from: `Chario <chario@ianbanda.com>`,
+    ...details,
+  });
+}
