@@ -14,7 +14,6 @@ const LoanSchema = new Schema({
     default: 'pending',
   },
   reason: { type: String, default: '' },
-  interest_rate: { type: Schema.Types.ObjectId, ref: 'rate' },
   active: { type: Boolean, default: false },
   issue_date: Date,
   payment_date: Date,

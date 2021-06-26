@@ -8,8 +8,6 @@ const pbkdf2 = promisify(crypto.pbkdf2);
 
 const UserSchema = new Schema({
   email: String,
-  hub: { type: Schema.Types.ObjectId, ref: 'hub' },
-  wallet: String,
   salt: String,
   hash: String,
 });
