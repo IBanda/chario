@@ -4,10 +4,11 @@ import getHeaders from '../utils/getHeaders.js';
 import getSignature from '../utils/getSignature.js';
 import Hub from '../models/hub.js';
 import Wallet from '../models/wallet.js';
+import sendMail from '../utils/transporter.js';
 
 const baseURL = 'https://sandboxapi.rapyd.net/v1';
 
-export async function createHubWallet(req, res, next) {
+export async function createHub(req, res, next) {
   const { interestRate, ...body } = req.body;
   try {
     const wallet = await createWallet(body);
@@ -34,6 +35,9 @@ export async function createPersonalWallet(req, res, next) {
   }
 }
 
+/*
+ * TODO: use the collect api
+ */
 export async function addWalletFunds(req, res, next) {
   const { body } = req;
   try {
@@ -112,6 +116,32 @@ export async function joinHub(req, res, next) {
     res.json({
       status: 'SUCCESS',
       message: 'Successfully joined the hub',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function inviteHubMembers(req, res, next) {
+  const { emails } = req.body;
+
+  try {
+    const emailsToSend = emails.map((email) =>
+      sendMail({
+        to: email,
+        subject: `You've been invited to join a chario hub`,
+        text: 'Click the link to join the hub',
+        html: `<a>Join the hub</a>`,
+      })
+    );
+
+    // eslint-disable-next-line no-undef
+    await Promise.all(emailsToSend);
+
+    res.status(200);
+    res.json({
+      status: 'SUCCESS',
+      message: 'Invitations successfully sent',
     });
   } catch (error) {
     next(error);
