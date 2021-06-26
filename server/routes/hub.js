@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  createHubWallet,
+  createHub,
   createPersonalWallet,
   addWalletFunds,
   transferwalletFunds,
@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 router.post('/join', joinHub);
-router.post('/wallet/group/create', createHubWallet);
+router.post('/wallet/group/create', createHub);
 router.post('/wallet/personal/create', createPersonalWallet);
 router.post('/account/deposit', addWalletFunds);
 router.post('/account/transfer', transferwalletFunds);
