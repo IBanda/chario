@@ -7,7 +7,8 @@ const { Schema, model } = mongoose;
 const pbkdf2 = promisify(crypto.pbkdf2);
 
 const UserSchema = new Schema({
-  email: String,
+  name: String,
+  email: { type: String, unique: true },
   salt: String,
   hash: String,
 });

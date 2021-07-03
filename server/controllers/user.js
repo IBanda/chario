@@ -9,17 +9,18 @@ export async function signUp(req, res, next) {
     const userExists = await User.exists({ email });
     if (userExists) {
       res.status(401);
-      return res.json({ message: 'Email already exists' });
+      return res.json({ status: 'ERROR', message: 'Email already exists' });
     }
-
     const user = new User({ email });
     await user.hashFn(password);
     const newUser = await user.save();
-
-    req.session.user = newUser.id;
-
+    req.session.user = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+    };
     res.status(200);
-    res.json(newUser);
+    res.json({ status: 'SUCCESS', user: newUser });
   } catch (error) {
     next(error);
   }
@@ -30,23 +31,26 @@ export async function signIn(req, res, next) {
     const {
       body: { email, password },
     } = req;
-
     const user = await User.findOne({ email });
     if (!user) {
       res.status(401);
-      return res.json({ message: 'Invalid email provided' });
+      return res.json({ status: 'ERROR', message: 'Invalid email provided' });
     }
-
     const isValid = await user.compareFn(password);
-
     if (!isValid) {
       res.status(401);
-      return res.json({ message: 'Invalid password provided' });
+      return res.json({
+        status: 'ERROR',
+        message: 'Invalid password provided',
+      });
     }
-
-    req.session.user = user.id;
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
     res.status(200);
-    res.json(user);
+    res.json({ status: 'SUCCESS', user });
   } catch (error) {
     next(error);
   }

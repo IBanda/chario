@@ -7,7 +7,6 @@ export default function getSignature(urlPath, httpMethod = 'get', body = '') {
   if (JSON.stringify(body) !== '{}' && body !== '') {
     stringifiedBody = JSON.stringify(body);
   }
-
   const toSign =
     httpMethod +
     urlPath +

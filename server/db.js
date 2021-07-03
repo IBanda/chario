@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
+import logger from 'loglevel';
 
-try {
-  mongoose.connect(process.env.MONGODB_URI, {
+mongoose
+  .connect(process.env.MONGODB_URI, {
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
     useNewUrlParser: true,
+  })
+  .catch((error) => {
+    logger.error(error.message);
+    process.exit(1);
   });
-} catch (error) {
-  process.exit(1);
-}
 
 mongoose.connection.on('error', (error) => {
-  console.error(error);
+  logger.error(error.message);
 });

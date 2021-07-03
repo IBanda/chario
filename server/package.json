@@ -4,18 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nodemon -r dotenv/config ./bin/www.js",
-    "start": "node -r dotenv/config ./bin/www.js",
+    "dev": "nodemon -r dotenv/config start.js ",
+    "start": "node -r dotenv/config start.js ",
     "lint": "eslint . --fix",
     "format": "prettier . --write",
+    "test": "jest --watchAll --detectOpenHandles",
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "debug": "~2.6.9",
     "dotenv": "^10.0.0",
     "express": "~4.16.1",
     "express-session": "^1.17.2",
+    "helmet": "^4.6.0",
+    "loglevel": "^1.7.1",
     "mongoose": "^5.12.14",
     "morgan": "~1.9.1",
     "node-fetch": "^2.6.1",
@@ -24,11 +29,29 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
+    "babel-jest": "^27.0.6",
+    "cross-env": "^7.0.3",
     "eslint": "7.2.0",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jest": "^24.3.6",
+    "jest": "^27.0.6",
     "lint-staged": "^11.0.0",
-    "prettier": "^2.3.1"
+    "msw": "^0.30.0",
+    "prettier": "^2.3.1",
+    "supertest": "^6.1.3",
+    "supertest-session": "^4.1.0"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/utils/"
+    ]
   }
 }
