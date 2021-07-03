@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "precommit:server":"cd server && yarn precommit",
-    "precommit":"npm-run-all precommit:server",
+    "precommit:client":"cd client && yarn precommit",
+    "precommit":"npm-run-all precommit:server precommit:client",
     "test": "test"
   },
   "repository": {
