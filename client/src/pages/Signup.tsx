@@ -11,7 +11,7 @@ export default function Signup() {
       </div>
       <div
         className="col-span-2 relative  chario__sign-right bg-opacity-50"
-        style={{ backgroundImage: 'url(/bg2.jpg)' }}
+        style={{ backgroundImage: 'url(/bg.jpg)' }}
       >
         <div className="max-w-md w-full absolute top-1/2 -left-20 transform -translate-y-1/2 bg-white chario__custom-shadow-blue rounded overflow-hidden ">
           <img
