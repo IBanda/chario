@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import EmailInput from './EmailInput';
 import AuthInput from './AuthInput';
 
@@ -21,7 +22,7 @@ export default function SignupForm() {
             id="fname"
             value={fname}
             setValue={setFname}
-            label={'First Name'}
+            label={'First name'}
             className="w-full"
           />
         </span>
@@ -30,7 +31,7 @@ export default function SignupForm() {
             id="lname"
             value={lname}
             setValue={setLname}
-            label={'Last Name'}
+            label={'Last name'}
             className="w-full"
           />
         </span>
@@ -48,7 +49,7 @@ export default function SignupForm() {
         type="password"
         id="confirmpswd"
         value={confirmpswd}
-        label="Confirm Password"
+        label="Confirm new password"
         setValue={setConfirmpswd}
         autoComplete="new-password"
       />
@@ -63,6 +64,12 @@ export default function SignupForm() {
       >
         Sign up
       </button>
+      <span className="text-sm text-gray-500 mt-8">
+        Already have an account?{' '}
+        <Link className="text-blue-500" to="/">
+          Log in
+        </Link>
+      </span>
     </form>
   );
 }
